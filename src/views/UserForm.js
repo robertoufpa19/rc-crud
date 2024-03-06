@@ -1,11 +1,13 @@
 
-import React, {useState} from "react"
+import React, {useState, useContext} from "react"
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 import { Avatar, Button, Icon } from '@rneui/themed';
+import UsersContext from '../context/UsersContext'
 
 export default ({route, navigation}) => {
 
     const [user, setUser] = useState(route.params ? route.params : {})
+    const {dispatch} = useContext(UsersContext)
     return(
         <View style={style.form}>
 
@@ -13,6 +15,14 @@ export default ({route, navigation}) => {
             rounded
             source={{ uri: user.avatarUrl }}
           />
+
+            <Text>URL Avatar:</Text>
+            <TextInput
+              style={style.input}
+               onChangeText={avatarUrl => setUser({...user, avatarUrl})}
+               placeholder="url"
+               value={user.avatarUrl}
+            />
 
             <Text>Nome:</Text>
             <TextInput
@@ -32,6 +42,10 @@ export default ({route, navigation}) => {
 
             <Button radius={"sm"} type="solid" marginBottom ={5}
              onPress={() => {
+                dispatch({
+                  type: user.id ? 'updateUser' : 'createUser',
+                  payload: user,
+                })
                 navigation.goBack()
              }}
             >
